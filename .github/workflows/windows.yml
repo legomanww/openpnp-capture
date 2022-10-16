@@ -17,15 +17,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup MSbuild
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Build
         run: |
-                mkdir build_${{ matrix.build_type }}
-                cd build_${{ matrix.build_type }}
+                mkdir build
+                cd build
                 cmake -G "Visual Studio 17 2022" -A ${{ matrix.arch }} ..
                 msbuild ALL_BUILD.vcxproj /property:Configuration=${{ matrix.build_type }}
 
@@ -34,8 +34,8 @@ jobs:
         with: 
           name: ${{ matrix.build_type }}_${{ matrix.arch }}
           path: |
-            build_${{ matrix.build_type }}/${{ matrix.build_type }}/*
-            build_${{ matrix.build_type }}/win/tests/${{ matrix.build_type }}/*
+            build/${{ matrix.build_type }}/
+            build/win/tests/${{ matrix.build_type }}/
 
 #       - name: Create Release
 #         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
