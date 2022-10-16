@@ -4,6 +4,7 @@ name: Build OpenPnP Capture Distribution for Windows
 on: 
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build: 
