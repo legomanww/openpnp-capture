@@ -88,7 +88,11 @@ bool PlatformContext::enumerateDevices()
     LOG(LOG_DEBUG, "enumerateDevices called\n");
 
     m_devices.clear();
-    for (AVCaptureDevice* device in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) 
+    AVCaptureDeviceDiscoverySession *session = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[
+			AVCaptureDeviceTypeBuiltInWideAngleCamera,
+			AVCaptureDeviceTypeExternalUnknown,
+		] mediaType:nil position:AVCaptureDevicePositionUnspecified];
+    for (AVCaptureDevice* device in [session devices]) 
     {
         platformDeviceInfo* deviceInfo = new platformDeviceInfo();
         deviceInfo->m_captureDevice = CFBridgingRetain(device);
