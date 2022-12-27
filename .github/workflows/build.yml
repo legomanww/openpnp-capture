@@ -7,13 +7,13 @@ on:
 
 jobs:
   build-mac-linux: 
-    name: Build for MacOS and Linux
+    name: Build ${{ matrix.os }} ${{ matrix.arch }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu, macos]
         arch: [x86_64] # , aarch64
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -61,7 +61,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.arch == 'aarch64'
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with: 
           name: ${{ matrix.os }}_${{ matrix.arch }}
           path: |
@@ -77,14 +77,14 @@ jobs:
 #            allowUpdates: true
 
   build-windows: 
-    name: Windows x64
+    name: Build ${{ matrix.os }} ${{ matrix.arch }}
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows]
         build_type: [Release]
         arch: [x64]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
