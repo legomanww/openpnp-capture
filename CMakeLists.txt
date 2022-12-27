@@ -11,6 +11,9 @@
 #
 
 cmake_minimum_required(VERSION 3.1)
+IF(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
+ENDIF()
 project (openpnp-capture)
 set(OPENPNP_CAPTURE_LIB_VERSION "0.0.23" CACHE STRING "openpnp-capture library version")
 set(OPENPNP_CAPTURE_LIB_SOVERSION "0.0.23" CACHE STRING "openpnp-capture library soversion")
