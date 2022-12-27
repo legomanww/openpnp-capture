@@ -32,7 +32,7 @@ jobs:
       # https://github.com/actions/virtual-environments/issues/2187
       - name: Copy deploy artifacts if running on OSX
         run: |
-               cd build && cmake .. && make && cd ..
+               cd build && cmake .. -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" && make && cd ..
                cp build/mac/tests/openpnp-capture-test deploy/openpnp-capture-test-${{ matrix.os }}-${{ matrix.arch }}
                cp build/libopenpnp-capture.dylib deploy/libopenpnp-capture-${{ matrix.os }}-${{ matrix.arch }}.dylib
         if: matrix.os == 'macos' && matrix.arch == 'x86_64'
