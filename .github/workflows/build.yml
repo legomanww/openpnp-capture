@@ -12,6 +12,9 @@ jobs:
       matrix:
         os: [ubuntu, macos]
         arch: [x86_64, aarch64]
+        exclude: # no need to run this, as it's built as part of x64
+          - os: macos
+            arch: aarch64
 
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -28,8 +31,6 @@ jobs:
         run: |
           mkdir -p build deploy
 
-      # Will only build Intel artifacts for now since GHA still does not have support for Apple Silicon:
-      # https://github.com/actions/virtual-environments/issues/2187
       - name: Build and copy deploy artifacts if running on OSX
         run: |
                cd build && cmake .. && make && cd ..
