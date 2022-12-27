@@ -117,6 +117,7 @@ jobs:
 #             allowUpdates: true
 
   build-nuget:
+    name: Build Nuget package
     needs: [build-mac-linux, build-windows]
     runs-on: ubuntu-latest
     timeout-minutes: 5

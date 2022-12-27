@@ -5,7 +5,7 @@
     <!-- package -->
     <id>openpnp-capture.native</id>
     <title>openpnp-capture - Native binaries for Linux x64</title>
-    <version>$version$</version>
+    <version>0.0.1</version>
     <description>This package complements the openpnp-capture.NET package and contains native binaries of openpnp-capture</description>
     <summary>Native binaries of openpnp-capture</summary>
     <projectUrl>https://github.com/openpnp/openpnp-capture</projectUrl>
