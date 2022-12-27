@@ -23,7 +23,7 @@
   <files>
     <file src="build/ubuntu-latest_x86_64/libopenpnp-capture-ubuntu-latest-x86_64.so" target="runtimes/linux-x64/native/libopenpnp-capture.so" />
     <!--<file src="build/libopenpnp-capture-ubuntu-latest-aarch64.so" target="runtimes/linux-arm64/native/libopenpnp-capture.so" />-->
-    <file src="build/macos-latest-x86_x64/libopenpnp-capture-macos-latest-x86_64.dylib" target="runtimes/osx-x64/native/libopenpnp-capture.dylib" />
+    <file src="build/macos-latest_x86_64/libopenpnp-capture-macos-latest-x86_64.dylib" target="runtimes/osx-x64/native/libopenpnp-capture.dylib" />
     <file src="build/windows-latest_x64/openpnp-capture.dll" target="runtimes/win-x64/native/openpnp-capture.dll" />
   </files>
 </package>
