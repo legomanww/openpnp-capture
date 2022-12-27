@@ -134,7 +134,7 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+        uses: gittools/actions/gitversion/setup@v0.9.15
         with:
           versionSpec: '5.x'
       - name: Download Build Artifacts
