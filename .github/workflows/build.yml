@@ -1,4 +1,4 @@
-name: Build Mac and Linux
+name: Build Mac, Linux, Windows
 
 on: 
   push:
@@ -6,16 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  build: 
+  build-mac-linux: 
+    name: Build for MacOS and Linux
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        arch: [x86_64, aarch64]
+        arch: [x86_64] # , aarch64
 
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install packages on Linux (native non-docker build)
         run: sudo apt-get update -y && sudo apt-get install -y nasm libgtk-3-dev
@@ -62,12 +65,98 @@ jobs:
         with: 
           name: ${{ matrix.os }}_${{ matrix.arch }}
           path: |
-            deploy/*
+            deploy/*.so
+            deploy/*.dylib
 
-      - name: Create Release
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        uses: ncipollo/release-action@v1
+#      - name: Create Release
+#        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+#        uses: ncipollo/release-action@v1
+#        with:
+#            artifacts: "deploy/*"
+#            token: ${{ secrets.GITHUB_TOKEN }}
+#            allowUpdates: true
+
+  build-windows: 
+    name: Windows x64
+    strategy:
+      matrix:
+        os: [windows-latest]
+        build_type: [Release]
+        arch: [x64]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-            artifacts: "deploy/*"
-            token: ${{ secrets.GITHUB_TOKEN }}
-            allowUpdates: true
+          fetch-depth: 0
+
+      - name: Setup MSbuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build
+        run: |
+                mkdir build
+                cd build
+                cmake -G "Visual Studio 17 2022" -A x64 ..
+                msbuild ALL_BUILD.vcxproj /property:Configuration=Release
+
+      - name: Upload Artifacts 
+        uses: actions/upload-artifact@v3
+        with: 
+          name: ${{ matrix.os }}_x64
+          path: |
+            build/Release/*.dll
+
+#      - name: Create Release
+#         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+#         uses: ncipollo/release-action@v1
+#         with:
+#             artifacts: "build/${{ matrix.build_type }}/*"
+#             token: ${{ secrets.GITHUB_TOKEN }}
+#             allowUpdates: true
+
+  build-nuget:
+    needs: [build-mac-linux, build-windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup internal repos access
+        run: git config --global url."https://${{ secrets.LANDING_GIT_TOKEN }}@github.com/".insteadOf "ssh://git@github.com/"
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x'
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: build/
+      - name: Show downloaded
+        run: |
+          ls build/
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.15
+        with:
+          useConfigFile: true
+      - name: Pack
+        run: dotnet pack --no-restore --force /property:Version=${{ steps.gitversion.outputs.majorMinorPatch }}.${{ github.run_number }}
+      - name: Upload Artifacts 
+        uses: actions/upload-artifact@v3
+        with: 
+          name: nupkg
+          path: |
+            **/*.nupkg
+      #- name: Push
+      #  run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }}

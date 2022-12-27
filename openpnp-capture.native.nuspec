@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+  <metadata>
+
+    <!-- package -->
+    <id>openpnp-capture.native</id>
+    <title>openpnp-capture - Native binaries for Linux x64</title>
+    <version>$version$</version>
+    <description>This package complements the openpnp-capture.NET package and contains native binaries of openpnp-capture</description>
+    <summary>Native binaries of openpnp-capture</summary>
+    <projectUrl>https://github.com/openpnp/openpnp-capture</projectUrl>
+    <repository type="git" url="https://github.com/openpnp/openpnp-capture" />
+    <tags>openpnp-capture webcam binaries</tags>
+
+    <!-- legal -->
+    <license type="expression">MIT</license>
+    <authors>openpnp</authors>
+    <owners>openpnp</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>openpnp</copyright>
+
+  </metadata>
+  <files>
+    <file src="build/libopenpnp-capture-ubuntu-latest-x86_64.so" target="runtimes/linux-x64/native/libopenpnp-capture.so" />
+    <file src="build/libopenpnp-capture-ubuntu-latest-aarch64.so" target="runtimes/linux-arm64/native/libopenpnp-capture.so" />
+    <file src="build/libopenpnp-capture-macos-latest-x86_x64.dylib" target="runtimes/osx-x64/native/libopenpnp-capture.dylib" />
+    <file src="build/openpnp-capture.dll" target="runtimes/win-x64/native/openpnp-capture.dll" />
+  </files>
+</package>
